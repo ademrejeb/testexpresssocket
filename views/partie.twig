@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <center>
+        <label for="">Nom partie</label>
+        <input type="text" id="nom">
+        <br>
+        <label for="">Joueur 1</label>
+        <input type="text" id="id1">
+        <br>
+        <label for="">Joueur 2</label>
+        <input type="text" id="id2">
+        <br>
+        <button onclick="send()">Envoyer</button>
+        <button onclick="aff()">Afficher Stat</button>
+        <button onclick="sendAttaque()">attaque</button>
+        <button onclick="sendcounterAttaque()">Contreattaque</button>
+<p></p>
+        
+    <div id="attackStats"></div>
+    </center>
+
+    <script>
+        const socket=io.connect();
+
+
+   
+
+        socket.on("partie",(data)=>{
+            p=document.createElement("p")
+            p.innerHTML=("<center>"+"partie : "+data.nom+"<br>"+"id1 : "+data.id1+"<br>"+"id2 : "+data.id2+"</center>")
+            document.body.append(p)
+        })
+
+        socket.on("aff",(data)=>{
+            p=document.createElement("p")
+            p.innerHTML=(data.j1.pseudo)
+            document.body.append(p)
+        })
+
+        socket.on('attaque1', (result) => {
+        console.log('Attack result:', result);
+        });
+        
+
+        socket.on('attaque2', (result) => {
+        console.log('contre Attack result:', result);
+        });
+        
+
+
+        function sendAttaque(){
+            data={
+                id1:id1.value,
+                id2:id2.value
+            }
+            socket.emit("attaque",data)
+        }
+
+        function sendcounterAttaque(){
+            data={
+                id1:id1.value,
+                id2:id2.value
+            }
+            socket.emit("attaquecontre",data)
+        }
+
+        function send(){
+            //console.log("msg"+x.value)
+
+            partie={
+                nom:nom.value,
+                id1:id1.value,
+                id2:id2.value
+            }
+            socket.emit("partie",partie)
+        }
+
+        function aff(){
+
+            partie={
+                nom:nom.value,
+                id1:id1.value,
+                id2:id2.value
+            }
+            socket.emit("aff",partie)
+        }
+
+     
+
+
+    </script>
+    </body>
+</html>
